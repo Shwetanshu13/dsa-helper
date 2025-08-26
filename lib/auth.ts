@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import db from "@/db";
 
 import type { NextAuthOptions, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
@@ -14,9 +15,10 @@ export const authOptions: NextAuthOptions = {
   ],
   session: { strategy: "jwt" as const },
   callbacks: {
-    async session({ session, token }: { session: Session; token: any }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user && token?.sub) {
-        (session.user as any).id = token.sub;
+        // Extend the session user type to include id
+        (session.user as Session["user"] & { id: string }).id = token.sub;
       }
       return session;
     },

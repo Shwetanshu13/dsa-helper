@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { fetchMotivation } from "@/lib/gemini";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const motivation = await fetchMotivation();
     return NextResponse.json({

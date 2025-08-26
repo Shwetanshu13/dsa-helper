@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.10.0",
-    "@types/next-auth": "^3.15.0",
+    "@google/genai": "^1.15.0",
     "drizzle-orm": "^0.44.5",
     "next": "15.5.1",
     "next-auth": "^4.24.11",
@@ -19,7 +19,7 @@
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^20",
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "latest",
     "@types/pg": "^8.15.5",

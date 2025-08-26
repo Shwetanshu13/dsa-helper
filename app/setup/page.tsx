@@ -3,6 +3,9 @@ import { authOptions } from "@/lib/auth";
 import { getUserByIdOrEmail, updateLeetCodeIdByIdOrEmail } from "@/lib/user";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering for authentication
+export const dynamic = "force-dynamic";
+
 export default async function SetupPage() {
   const session = await getServerSession(authOptions);
 

@@ -3,9 +3,13 @@ import { authOptions } from "@/lib/auth";
 import { getUserByIdOrEmail } from "@/lib/user";
 import { fetchLeetCodeSolved, fetchLeetCodeProfile } from "@/lib/leetcode";
 import { fetchMotivation } from "@/lib/gemini";
-import Navbar from "./components/Navbar";
-import DashboardContent from "./components/DashboardContent";
+import Navbar from "@/components/Navbar";
+import DashboardContent from "@/components/DashboardContent";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+
+// Force dynamic rendering for authentication
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   try {
@@ -115,14 +119,14 @@ export default async function Home() {
             Something went wrong
           </h1>
           <p className="text-gray-600 mb-4">
-            We're having trouble loading your dashboard.
+            We&apos;re having trouble loading your dashboard.
           </p>
-          <a
+          <Link
             href="/api/auth/signin"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Try Again
-          </a>
+          </Link>
         </div>
       </div>
     );

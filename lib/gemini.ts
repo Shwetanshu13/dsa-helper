@@ -1,8 +1,7 @@
-// Helper for fetching motivational lines from Gemini Free API
-export async function fetchMotivation(): Promise<string> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+import { GoogleGenAI } from "@google/genai";
 
+// Helper for fetching motivational lines from Gemini API
+export async function fetchMotivation(): Promise<string> {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -10,49 +9,25 @@ export async function fetchMotivation(): Promise<string> {
       return getFallbackQuote();
     }
 
-    // Use direct API call since SDK has installation issues
+    // Initialize the Google Generative AI client
+    const ai = new GoogleGenAI({ apiKey });
+
     const prompt = `Generate a short, creative and inspiring motivational quote (maximum 15 words) for a programmer working on Data Structures and Algorithms. The quote should encourage them to keep practicing, push their limits, and achieve their coding goals. Make it energetic and specific to DSA/competitive programming.`;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.9,
-            topK: 1,
-            topP: 1,
-            maxOutputTokens: 50,
-          },
-        }),
-        signal: controller.signal,
-      }
+    // Generate content with timeout handling
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Request timeout")), 8000)
     );
 
-    clearTimeout(timeoutId);
+    const response = await Promise.race([
+      ai.models.generateContent({
+        model: "gemini-2.0-flash-001",
+        contents: prompt,
+      }),
+      timeoutPromise,
+    ]);
 
-    if (!response.ok) {
-      console.error(
-        `Gemini API error: ${response.status} ${response.statusText}`
-      );
-      return getFallbackQuote();
-    }
-
-    const data = await response.json();
-    const motivationalQuote =
-      data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const motivationalQuote = response.text?.trim();
 
     if (motivationalQuote && motivationalQuote.length > 0) {
       return motivationalQuote;
@@ -61,10 +36,8 @@ export async function fetchMotivation(): Promise<string> {
       return getFallbackQuote();
     }
   } catch (error) {
-    clearTimeout(timeoutId);
-
     if (error instanceof Error) {
-      if (error.name === "AbortError") {
+      if (error.message === "Request timeout") {
         console.error("Gemini API request timed out");
       } else {
         console.error("Error fetching motivation from Gemini:", error.message);

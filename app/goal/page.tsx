@@ -4,6 +4,9 @@ import { getUserByIdOrEmail, updateGoal } from "@/lib/user";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+// Force dynamic rendering for authentication
+export const dynamic = "force-dynamic";
+
 export default async function GoalPage() {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {

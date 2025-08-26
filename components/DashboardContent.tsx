@@ -6,31 +6,21 @@ import ProfileCard from "./ProfileCard";
 import QuestionBifurcation from "./QuestionBifurcation";
 import RefreshButton from "./RefreshButton";
 import MotivationButton from "./MotivationButton";
+import { SolvedData, ProfileData, DashboardData } from "@/lib/types";
 
 interface DashboardContentProps {
-  initialData: {
-    solved: any;
-    profile: any;
-    motivation: string;
-    solvedCount: number;
-    target: number;
-    remaining: number;
-    daysLeft: number | null;
-    userName: string;
-  };
+  initialData: DashboardData;
 }
 
 export default function DashboardContent({
   initialData,
 }: DashboardContentProps) {
-  const [solved, setSolved] = useState(initialData.solved);
-  const [profile, setProfile] = useState(initialData.profile);
+  const [solved, setSolved] = useState<SolvedData>(initialData.solved);
+  const [profile, setProfile] = useState<ProfileData>(initialData.profile);
   const [motivation, setMotivation] = useState(initialData.motivation);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState<string | null>(null);
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
     setRefreshError(null);
 
     try {
@@ -72,8 +62,6 @@ export default function DashboardContent({
     } catch (error) {
       console.error("Error refreshing data:", error);
       setRefreshError("Failed to refresh data. Please try again later.");
-    } finally {
-      setIsRefreshing(false);
     }
   };
 
