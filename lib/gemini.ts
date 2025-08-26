@@ -1,8 +1,12 @@
 // Helper for fetching motivational lines from Gemini Free API
 export async function fetchMotivation(): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
+      console.warn("GEMINI_API_KEY not found, using fallback quote");
       return getFallbackQuote();
     }
 
@@ -33,24 +37,42 @@ export async function fetchMotivation(): Promise<string> {
             maxOutputTokens: 50,
           },
         }),
+        signal: controller.signal,
       }
     );
 
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error(
+        `Gemini API error: ${response.status} ${response.statusText}`
+      );
+      return getFallbackQuote();
     }
 
     const data = await response.json();
     const motivationalQuote =
       data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
-    if (motivationalQuote) {
+    if (motivationalQuote && motivationalQuote.length > 0) {
       return motivationalQuote;
     } else {
-      throw new Error("No quote generated");
+      console.warn("Empty quote generated from Gemini API");
+      return getFallbackQuote();
     }
   } catch (error) {
-    console.error("Error fetching motivation from Gemini:", error);
+    clearTimeout(timeoutId);
+
+    if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        console.error("Gemini API request timed out");
+      } else {
+        console.error("Error fetching motivation from Gemini:", error.message);
+      }
+    } else {
+      console.error("Unknown error fetching motivation:", error);
+    }
+
     return getFallbackQuote();
   }
 }
