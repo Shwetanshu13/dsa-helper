@@ -12,17 +12,19 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  // Authentication checks - allow redirects to flow through naturally
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.email) {
+    redirect("/api/auth/signin");
+  }
+
+  const user = await getUserByIdOrEmail(session.user.email);
+  if (!user?.leetcodeUsername) {
+    redirect("/setup");
+  }
+
+  // Data fetching with error handling (but not redirects)
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.email) {
-      redirect("/api/auth/signin");
-    }
-
-    const user = await getUserByIdOrEmail(session.user.email);
-    if (!user?.leetcodeUsername) {
-      redirect("/setup");
-    }
-
     // Fetch LeetCode stats and profile with individual error handling
     let solved, profile, motivation;
 
@@ -109,9 +111,9 @@ export default async function Home() {
       </div>
     );
   } catch (error) {
-    console.error("Critical error in Home component:", error);
+    console.error("Error rendering dashboard:", error);
 
-    // Return error page
+    // Return error page for rendering errors only
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
