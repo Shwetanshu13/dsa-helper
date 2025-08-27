@@ -90,7 +90,7 @@ export default function MotivationButton({
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-purple-200 rounded-xl p-4 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400"></div>
             <p className="text-gray-800 font-medium text-lg leading-relaxed italic">
-              "{currentMotivation}"
+              &ldquo;{currentMotivation}&rdquo;
             </p>
             <div className="absolute bottom-2 right-3 text-purple-300 text-2xl opacity-50">
               💭
