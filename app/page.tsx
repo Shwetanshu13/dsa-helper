@@ -103,11 +103,29 @@ export default async function Home() {
     };
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <Navbar />
-        <main className="max-w-4xl mx-auto p-4 space-y-6">
-          <DashboardContent initialData={initialData} />
-        </main>
+
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-3xl"></div>
+          <div className="relative">
+            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <div className="text-center mb-8">
+                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  Welcome back, {initialData.userName}! 👋
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Keep pushing your limits and achieve your coding goals
+                </p>
+              </div>
+
+              <div className="space-y-8">
+                <DashboardContent initialData={initialData} />
+              </div>
+            </main>
+          </div>
+        </div>
       </div>
     );
   } catch (error) {

@@ -70,45 +70,56 @@ export default function DashboardContent({
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Welcome, {initialData.userName}!</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+            Dashboard Overview
+          </h2>
+          <p className="text-gray-600">
+            Track your progress and stay motivated
+          </p>
+        </div>
         <RefreshButton onRefresh={handleRefresh} />
       </div>
 
       {refreshError && (
         <div
-          className={`rounded-lg p-4 ${
+          className={`rounded-xl p-4 mb-6 border ${
             refreshError.includes("Rate limited")
-              ? "bg-yellow-50 border border-yellow-200 text-yellow-800"
-              : "bg-red-50 border border-red-200 text-red-800"
+              ? "bg-amber-50 border-amber-200 text-amber-800"
+              : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
           <div className="flex items-center gap-2">
-            <span>{refreshError.includes("Rate limited") ? "⏳" : "⚠️"}</span>
-            <span className="text-sm">{refreshError}</span>
+            <span className="text-lg">
+              {refreshError.includes("Rate limited") ? "⏳" : "⚠️"}
+            </span>
+            <span className="text-sm font-medium">{refreshError}</span>
           </div>
         </div>
       )}
 
-      <MotivationButton
-        currentMotivation={motivation}
-        onNewMotivation={setMotivation}
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+          <MotivationButton
+            currentMotivation={motivation}
+            onNewMotivation={setMotivation}
+          />
+        </div>
+        <div className="lg:col-span-1">
+          <LeetCodeStats
+            solved={currentSolvedCount}
+            target={initialData.target}
+            remaining={remaining}
+            daysLeft={initialData.daysLeft}
+          />
+        </div>
+      </div>
 
-      <LeetCodeStats
-        solved={currentSolvedCount}
-        target={initialData.target}
-        remaining={remaining}
-        daysLeft={initialData.daysLeft}
-      />
-
-      <section>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ProfileCard profile={profile} />
-      </section>
-
-      <section>
         <QuestionBifurcation solved={solved} />
-      </section>
+      </div>
     </>
   );
 }

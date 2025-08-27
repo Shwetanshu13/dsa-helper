@@ -58,17 +58,46 @@ export default function MotivationButton({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="bg-blue-100 p-4 rounded-lg">
-        <p className="text-blue-800 font-medium">{currentMotivation}</p>
+    <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-0.5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 h-full">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">✨</span>
+            <h3 className="text-lg font-bold text-gray-800">
+              Daily Motivation
+            </h3>
+          </div>
+          <button
+            onClick={handleGetNewQuote}
+            disabled={isLoading}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white px-4 py-2 rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:scale-100 text-sm"
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Generating...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <span>🎲</span>
+                <span className="hidden sm:inline">New Quote</span>
+              </div>
+            )}
+          </button>
+        </div>
+
+        <div className="relative">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-purple-200 rounded-xl p-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400"></div>
+            <p className="text-gray-800 font-medium text-lg leading-relaxed italic">
+              "{currentMotivation}"
+            </p>
+            <div className="absolute bottom-2 right-3 text-purple-300 text-2xl opacity-50">
+              💭
+            </div>
+          </div>
+        </div>
       </div>
-      <button
-        onClick={handleGetNewQuote}
-        disabled={isLoading}
-        className="self-end bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white px-3 py-1 rounded text-sm transition-colors"
-      >
-        {isLoading ? "✨ Generating..." : "✨ New Quote"}
-      </button>
     </div>
   );
 }
